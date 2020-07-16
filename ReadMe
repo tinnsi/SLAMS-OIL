@@ -1,0 +1,94 @@
+This code compiles with gfortran.
+Makefile:
+
+test_new: main3.o production.o seawater.o Read_Data.o functions.o data.o physics4.o dbm_eos.o dbm_phys.o math_funcs.o
+	gfortran -o S_T_1 -fcheck=all main3.o production.o  seawater.o Read_Data.o functions.o data.o physics4.o dbm_eos.o dbm_phys.o math_funcs.o
+
+main3.o : main3.F90
+	gfortran -O -c main3.F90
+
+#DWH_Data.o : DWH_Data.F90
+#	gfortran -O -c DWH_Data.F90
+
+production.o : production.F90
+	gfortran -O -c production.F90
+
+seawater.o : seawater.F90
+	gfortran -O -c seawater.F90
+
+Read_Data.o : Read_Data.F90 main3.F90
+	gfortran -O -c 	Read_Data.F90
+
+functions.o : functions.F90 
+	gfortran -O -c functions.F90
+	
+data.o : data.F90 main3.F90
+	gfortran -O -c data.F90
+
+physics4.o : physics4.F90
+	gfortran -O -c physics4.F90
+
+dbm_eos.o : dbm_eos.F95
+	gfortran -O -c dbm_eos.F95
+
+dbm_phys.o : dbm_phys.F95
+	gfortran -O -c dbm_phys.F95
+
+math_funcs.o : math_funcs.F95
+	gfortran -O -c math_funcs.F95
+and to run it needs an input file:
+  ./test < input > log &
+
+This file will run a series of runs with different initial conditions:
+#!/bin/bash
+count=3601
+prodVar=1000 #init 200
+sediVar=200 #init 50 
+#oilVar=16  #0.01xDwH
+#oilVar=20  #SEEP
+#oilVar=160 #0.1xDWH
+#oilVar=800 #0.5xDWH
+#oilVar=1200 #0.75xDWH
+#oilVar=1600 #DWH
+oilVar=20 #2xDWH
+keyPulse=1
+
+tempVar=20
+TEPVar=200    #200
+sensVar=1
+
+while [ $count -le 3610 ] 
+do
+#   while [ $TEPVar -le 100000 ]
+#   while [ $sediVar -le  500 ]
+#   do
+       while [ $oilVar -le 21000 ]
+       do 
+#       while [ $sediVar -le 500 ]
+#       do 
+#      while [ $prodVar -le 2000 ]
+#      do 
+         mkdir OutputSLAMS$count
+         echo $prodVar $TEPVar $sediVar $oilVar $sensVar $count $keyPulse > inputFile
+#         echo $tempVar $prodVar $TEPVar $sediVar $oilVar $sensVar $count $keyPulse $keyPulse > inputFile
+         more inputFile 
+         echo "This is the input file for" $count
+         nohup ./S_T_1 < inputFile > error_msg$count &
+         rm inputFile
+#         (( prodVar = prodVar + 200 ))
+         (( count = count + 1 ))
+#      done
+#      prodVar=200
+#     (( sediVar = sediVar + 50  ))
+#     done
+#     sediVar=100
+  (( oilVar = oilVar * 2 ))
+done
+#      (( sensVar = sensVar + 1 ))
+#      sensVar=80
+#      oilVar=10
+#      oilVar=10
+#    (( tempVar = tempVar + 5 ))
+#   prodVar=100
+#   (( TEPVar = TEPVar + 20 ))
+done
