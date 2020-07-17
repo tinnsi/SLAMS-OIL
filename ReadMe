@@ -92,3 +92,6 @@ done
 #   prodVar=100
 #   (( TEPVar = TEPVar + 20 ))
 done
+
+
+These scripts are gnuplot scripts to produce plots.
