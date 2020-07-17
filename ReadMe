@@ -94,4 +94,6 @@ done
 done
 
 
-These scripts are gnuplot scripts to produce plots.
+These scripts are gnuplot scripts to produce plots:
+plotModVal.gp
+
