@@ -95,5 +95,16 @@ done
 
 
 These scripts are gnuplot scripts to produce plots:
+plotAll.gp
 plotModVal.gp
+plotParti.gp
+plotPulse.gp
+plotSF2.gp
+plotSensOil.gp
+plotSensi.gp
+plotSensi2.gp
+This script is to make cumulative fluxes for radii and velocity:
+makeCumul
+This script is to make a file with the total fluxes:
+makeMB
 
