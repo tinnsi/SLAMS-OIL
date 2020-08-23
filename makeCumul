@@ -1,0 +1,32 @@
+#!/bin/bash
+
+count=3671
+x=0
+y=0
+z=0
+q=0
+while [ $count -le 3679 ]
+do
+   cp OutputSLAMS$count/veloFloor.dat velo$count
+   cp OutputSLAMS$count/densFloor.dat dens$count
+   cp OutputSLAMS$count/sizeFloor.dat size$count
+   cp OutputSLAMS$count/oilFloor.dat oil$count
+   rm Size1$count Velo1$count Dens1$count Oil1$count 
+   rm temp1 temp2 temp3 temp4
+   echo "looping", $count
+   grep -v "0.0000E+00" size$count >> temp1
+   awk '{x=x+$2; print x, $1}' temp1 >> Size1$count
+   grep -v "0.0000E+00" velo$count >> temp2
+   awk '{y=y+$2; print y, $1}' temp2 >> Velo1$count
+   grep -v "0.0000E+00" dens$count >> temp3
+   awk '{z=z+$2; print z, $1}' temp3 >> Dens1$count
+   grep -v "0.0000E+00" oil$count >> temp4
+   awk '{q=q+$2; print q, $1}' temp4 >> Oil1$count
+   tail -1 Velo1$count
+   echo $count 'hello'
+   count=`expr $count + 1`
+done
+
+gnuplot plotAll.gp
+#gnuplot plotAll2.gp
+

@@ -1,0 +1,62 @@
+#!/bin/bash
+
+rm organicMB oilMB sediMB opalMB calcMB
+rm intoFile
+count=3681
+lines=30
+origLines=$lines
+while [ $lines -ge 1 ]
+  do
+   rm temp1 temp1? temp2 temp2? temp3 temp3? temp4 temp41
+
+   grep "flux" error_msg$count >> temp2
+  # head -2 temp2
+   tail -1 temp2 >> temp4
+   halfdays=`awk '{x=$3; print x}' temp4`
+   echo $halfdays $count
+   (( days = halfdays / 2 ))
+ 
+   grep "Total Org rel" error_msg$count >> temp1
+   totOrg=`awk '{x=$5; print x}' temp1`
+   grep "OrgC in water" error_msg$count >> temp11
+   OrgWC=`awk '{x=$5; print x}' temp11`
+   grep "OrgC lost to" error_msg$count >> temp12
+   OrgLost=`awk '{x=$5; print x}' temp12`
+   grep "OrgC accum" error_msg$count >> temp13
+   OrgAcc=`awk '{x=$5; print x}' temp13`
+   echo $count $days $totOrg $OrgWC $OrgLost $OrgAcc >> organicMB
+
+   grep "Total Oil rel" error_msg$count >> temp2
+   totOil=`awk '{x=$5; print x}' temp2`
+   grep "Oil in water" error_msg$count >> temp21
+   OilWC=`awk '{x=$5; print x}' temp21`
+   grep "Oil lost to" error_msg$count >> temp22
+   OilLost=`awk '{x=$5; print x}' temp22`
+   grep "Oil accum" error_msg$count >> temp23
+   OilAcc=`awk '{x=$5; print x}' temp23`
+   echo $count $days $totOil $OilWC $OilLost $OilAcc >> oilMB
+
+   grep "Total Mineral 3 rel" error_msg$count >> temp3
+   totOpal=`awk '{x=$6; print x}' temp3`
+   grep "Opal in water" error_msg$count >> temp31
+   OpalWC=`awk '{x=$5; print x}' temp31`
+   grep "Opal lost to" error_msg$count >> temp32
+   OpalLost=`awk '{x=$5; print x}' temp32`
+   grep "Opal accum" error_msg$count >> temp33
+   OpalAcc=`awk '{x=$5; print x}' temp33`
+   echo $count $days $totOpal $OpalWC $OpalLost $OpalAcc >> opalMB
+
+   grep "Total Sand rel" error_msg$count >> temp4
+   totSedi=`awk '{x=$5; print x}' temp4`
+   grep "Sediments accum" error_msg$count >> temp41
+   SediAcc=`awk '{x=$5; print x}' temp41`
+   echo $count $days $totSedi $SediAcc >> sediMB
+
+   (( count = count + 1 ))
+   (( lines = lines - 1 ))
+  done
+
+gfortran -o fileMan resMakeFile.F90
+echo $origLines >> intoFile
+more intoFile
+./fileMan < intoFile
